@@ -13,7 +13,7 @@ library(magrittr)
 ```
 # HOMEWORK 5 Data Wrangling
 ## Quesiton 1
-
+### https://github.com/urbandj/DDS6306/blob/master/DDSHW5.Rmd
 ```{r, echo=TRUE}
 #read in yob2016 file note sep=";"
 df<- read.csv2(file="c:/Users/daj0079/Desktop/SMU/yob2016.txt", header= FALSE, sep=";")
@@ -81,3 +81,4 @@ write.csv(Ffinal, file="c:/Users/daj0079/Desktop/SMU/final.csv")
 
 
 ```
+### https://github.com/urbandj/DDS6306/blob/master/DDSHW5.Rmd
