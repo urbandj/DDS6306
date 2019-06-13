@@ -1,0 +1,11 @@
+DDS HW5 codebook
+df-raw file for the year 2016 for childerns name based on sex and popularity
+df2-raw file for the year 2015 for childerns name based on sex and popularity
+y2016-cleaned and labeled file
+y2015-cleaned and labeled file
+M15_16-the merged y2015 and y2016 files
+Total-the popularity for each year added together
+Ntotal-upated M15_16 with Total added to Dataframe
+final- the completed full list for 2015 2016
+orderedfinal-temp object to generate Ffinal
+Ffinal- the top 10 female names for 2015 and 2016

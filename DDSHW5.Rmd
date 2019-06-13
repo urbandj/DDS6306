@@ -1,0 +1,83 @@
+---
+♥title: "DDS6306 HW5"
+author: "David Julovich"
+date: "6/12/2019"
+output: 
+  html_document:
+    keep_md: true
+---
+```{r include=FALSE}
+library(tidyverse)
+library(broom)
+library(magrittr)
+```
+# HOMEWORK 5 Data Wrangling
+## Quesiton 1
+
+```{r, echo=TRUE}
+#read in yob2016 file note sep=";"
+df<- read.csv2(file="c:/Users/daj0079/Desktop/SMU/yob2016.txt", header= FALSE, sep=";")
+head (df)
+dim(df)
+
+#rename the columns of the dataframe 
+#set the data in each column to the correct type
+df <- as_tibble(df) %>% rename(FirstName = V1 , Gender = V2 ,Y16Popularity = V3) ->df
+df$FirstName <- as.character(df$FirstName)
+df$Gender  <- as.character(df$Gender)
+df<-as.data.frame(df)
+##df %>% select(FirstName)
+
+#locate the type and remove it
+grep( "yyy$", df$FirstName, value = FALSE) 
+
+#set name for 2016 file as requested
+y2016<-df[-c(212),]
+```
+
+
+```{r , echo=TRUE}
+#Confrim the data is corrected
+grep("yyy$", y2016$FirstName,value = TRUE) 
+grep("Fiona", y2016$FirstName, value= TRUE)
+grep("Fionayyy", y2016$FirstName, value= TRUE)
+```
+
+## Quesiton 2
+### The last ten rows all had "Zy" as the first two letters in the name.
+```{r, echo=TRUE}
+
+#read in yob2015file note sep=","
+df2<- read.csv2(file="c:/Users/daj0079/Desktop/SMU/yob2015.txt", header= FALSE, sep=",")
+
+#rename the columns of the dataframe 
+#set the data in each column to the correct type
+df2 <- as_tibble(df2) %>% rename(FirstName = V1 , Gender = V2 ,Y15Popularity = V3) ->df2
+df2$FirstName <- as.character(df2$FirstName)
+df2$Gender  <- as.character(df2$Gender)
+df2<-as.data.frame(df2)
+
+#set name for 2015 file as requested
+y2015 <-df2
+
+#Merge tha 2016 and 2015 dfs
+M15_16<- merge(y2016,y2015, by="FirstName")
+
+```
+
+## Quesiton 3
+```{r, echo=TRUE}
+#Combine the totals for both years and rename columns
+Total<-(M15_16$Y16Popularity+ M15_16$Y15Popularity)
+Ntotal<-cbind(M15_16,Total)
+Ntotal %>% select(FirstName,Gender.x,Total) %>% rename( Gender=Gender.x) -> final
+
+#order the data by female and top 10 names 
+orderedfinal<-final[with(final,order(-Total)),]
+orderedfinal %>% filter(Gender =="F") %>% head(10)->Ffinal
+Ffinal
+#report results
+write.csv(Ffinal, file="c:/Users/daj0079/Desktop/SMU/final.csv")
+
+
+```
