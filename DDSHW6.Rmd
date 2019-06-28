@@ -1,0 +1,66 @@
+---
+title: "DDS 6306 HW6"
+author: "David Julovich"
+date: "6/26/2019"
+output: 
+  html_document:
+    keep_md: true
+---
+```{r, include=FALSE}
+library(dplyr)
+library(ggplot2)
+
+```
+# HOMEWORK 6 Mental Health Clnics
+## Quesiton 1 a & b
+### https://github.com/urbandj/DDS6306/blob/master/DDSHW6.Rmd
+```{r, echo=TRUE}
+load("C:/Users/daj0079/Desktop/SMU/N-MHSS-2015-DS0001-data-r.rda") 
+mhs<-mh2015_puf
+#head(mhs)
+#str(mhs)
+mhs %>% select(LST)-> st_list
+#st_list
+q1b <- distinct(st_list)
+```
+## Quesiton 1 c & d
+```{r, echo=TRUE}
+filter(mhs, FACILITYTYPE == "Veterans Administration medical center (VAMC) or other VA health care facility")-> fac_list
+fac_list %>%  filter(LST !="AK") %>%  filter(LST !="HI") %>%  filter(LST !="PR") %>% filter(LST !="RI")-> fac_list
+grep( "AK", fac_list$LST, value = FALSE) 
+grep( "HI", fac_list$LST, value = FALSE)
+grep( "PR", fac_list$LST, value = FALSE)
+manfact_list<-fac_list[-c(240,60,261,239,344),]
+#select(manfact_list, LST)
+#class(manfact_list)
+#manfact_list$FACILITYTYPE
+#grep( "Psychiatric hospital Separate inpatient psychiatric unit of a general hospital", fac_list$LST, value = FALSE)
+ggplot(data = manfact_list, aes(x=LST, y=FACILITYTYPE), )+geom_bar(stat="identity")+coord_flip()+
+  labs(y="Total Number VAMC's or VA's",x="Per State", title="HW6 Question 1 Plot")+theme(plot.title = element_text(hjust = 0.5), axis.text.x =element_blank())                                                                                                   
+```
+## Quesiton 2 a & b & c
+paste() show whitespace in the LST column.  This needs to be removed to merged the two set of on state abbervation.  
+```{r, echo=TRUE}
+statesize <-read.csv2("c:/Users/daj0079/desktop/SMU/statesize.csv", header = TRUE, sep = ",")
+paste(manfact_list$LST)
+
+manfact_list$LST= trimws(manfact_list$LST)
+paste(manfact_list$LST)
+
+merg_set <- merge(manfact_list, statesize, by.x = "LST",  by.y = "Abbrev",all.x = TRUE)
+va_hos <- as.data.frame(merg_set)
+
+class(va_hos)
+
+```
+## Quesiton 2 d & e
+
+
+```{r, echo=TRUE}
+cbPalette <- c("#999999", "#56B4E9", "#E69F00", "#009E73")
+ggplot(data = va_hos, aes(x=reorder(LST, -SqMiles), y=SqMiles, color=Region,na.rm=TRUE))+geom_bar(stat ="identity")+coord_flip()+
+  labs(y="Total Number VAMC's or VA's",x="Per State", title="HW6 Question 2 Plot")+theme(plot.title = element_text(hjust = 0.5)+scale_color_manual(values=cbPalette))
+
+
+```
+There is a unique pattern seen the plot.  The count of VA's per square miles produced some interesting trends.  The actual size of the state seems to some effect.  This is most likely related to population denisity.  The higher the density of people the more VAs.  The Northest region has the highest number of VAs per thousand square miles.  The West seem to have a low numbe of VA per per thousand square miles.  Texas has the lowest of ratio.  I tell my boss we need to be very careful to account this population denisty effect. Further studies should be doen to confirm this realtionship.  
